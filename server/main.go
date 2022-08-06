@@ -2,14 +2,22 @@ package main
 
 import (
 	"fmt"
+	"io"
+	"io/fs"
 	"log"
 	"net/http"
+	"os"
+	"path"
+	"path/filepath"
 	"sort"
+	"strings"
 	"time"
 
+	"github.com/gin-contrib/static"
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
 	"github.com/samber/lo"
+	"github.com/spf13/afero"
 )
 
 type Todo struct {
@@ -20,9 +28,27 @@ type Todo struct {
 
 var todos = make(map[string]*Todo, 0)
 
+func notFoundHandler(ctx *gin.Context) {
+	ctx.JSON(http.StatusNotFound, gin.H{
+		"status":  "failed",
+		"message": "Not Found",
+	})
+}
+
 func main() {
 	gin.SetMode(gin.ReleaseMode)
 	r := gin.Default()
+
+	r.NoRoute(notFoundHandler)
+
+	if os.Getenv("CACHE_ASSETS") == "true" {
+		// Load build files in memory and serve them from memory.
+		appFs := afero.NewMemMapFs()
+		copyFilesToAferoFs("../client/build", appFs)
+		r.Use(static.Serve("/", aferoToGinFs(appFs)))
+	} else {
+		r.Use(static.ServeRoot("/", "../client/build"))
+	}
 
 	r.POST("/api/v1/todos", func(ctx *gin.Context) {
 		payloadTodo := new(Todo)
@@ -88,4 +114,73 @@ func main() {
 
 	log.Println("Listening the server on :3001")
 	http.ListenAndServe(":3001", r.Handler())
+}
+
+type pipeServeFileSystem struct {
+	input afero.Fs
+}
+
+func (pFs *pipeServeFileSystem) Open(name string) (http.File, error) {
+	name = strings.TrimPrefix(name, "/")
+	return pFs.input.Open(name)
+}
+
+func (pFs *pipeServeFileSystem) Exists(prefix string, filepath string) bool {
+	if p := strings.TrimPrefix(filepath, prefix); len(p) < len(filepath) {
+		stats, err := pFs.input.Stat(p)
+		if err != nil {
+			return false
+		}
+		if stats.IsDir() {
+			index := path.Join(p, "index.html")
+			_, err := pFs.input.Stat(index)
+			if err != nil {
+				return false
+			}
+		}
+		return true
+	}
+	return false
+}
+
+func aferoToGinFs(fs afero.Fs) static.ServeFileSystem {
+	return &pipeServeFileSystem{fs}
+}
+
+func copyFilesToAferoFs(source string, dest afero.Fs) error {
+	return filepath.WalkDir(source, func(path string, d fs.DirEntry, err error) error {
+		if err != nil {
+			return err
+		}
+
+		destPath := strings.TrimPrefix(strings.TrimPrefix(path, source), "/")
+
+		if destPath == "" {
+			return nil
+		}
+
+		if d.IsDir() {
+			err := dest.MkdirAll(destPath, 0666)
+			if err != nil {
+				return err
+			}
+		} else if d.Type().IsRegular() {
+			destF, err := dest.OpenFile(destPath, os.O_CREATE|os.O_WRONLY|os.O_TRUNC, 0666)
+			if err != nil {
+				return err
+			}
+
+			sourceF, err := os.Open(path)
+			if err != nil {
+				return err
+			}
+
+			_, err = io.Copy(destF, sourceF)
+			if err != nil {
+				return err
+			}
+		}
+
+		return nil
+	})
 }
