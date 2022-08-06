@@ -1,0 +1,11 @@
+.todo-item {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  border-bottom: 1px solid #e8e8e8;
+  padding: 5px;
+}
+
+.todo-item .todo-text {
+  flex: 1;
+}

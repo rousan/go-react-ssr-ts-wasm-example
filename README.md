@@ -18,42 +18,16 @@ Setup the project by installing all the required dev tools:
 tusk setup
 ```
 
-Start the dev server:
+Start the dev server for client:
 
 ```sh
-tusk dev
+tusk dev:client
 ```
 
-Start the prod server:
+Start the dev server for server:
 
 ```sh
-tusk start
+tusk dev:server
 ```
-
-Start the prod server in Docker:
-
-```sh
-tusk up
-```
-
-Start the prod server in Docker in detached mode:
-
-```sh
-tusk up:detached
-```
-
-Deploy the staging server in VPS:
-
-```sh
-tusk deploy:staging
-```
-
-Deploy the production server in VPS:
-
-```sh
-tusk deploy:prod
-```
-
-**Note:** Please make sure to stop the staging server in VPS when it is NOT needed, otherwise it will consume resources which will affect the production server.
 
 Please refer to `tusk.yml` file for more commands.

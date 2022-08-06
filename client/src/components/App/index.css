@@ -1,0 +1,20 @@
+.app {
+  padding: 50px;
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+.app .todo-items {
+  margin-bottom: 50px;
+}
+
+.app .new-todo-panel {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.app .new-todo-input {
+  flex: 1;
+  margin-right: 10px;
+}
