@@ -2,13 +2,10 @@ package main
 
 import (
 	"fmt"
-	"io"
-	"io/fs"
 	"log"
 	"net/http"
 	"os"
 	"path"
-	"path/filepath"
 	"sort"
 	"strings"
 	"time"
@@ -16,6 +13,7 @@ import (
 	"github.com/gin-contrib/static"
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
+	"github.com/joho/godotenv"
 	"github.com/samber/lo"
 	"github.com/spf13/afero"
 )
@@ -35,22 +33,25 @@ func notFoundHandler(ctx *gin.Context) {
 	})
 }
 
+const apiRoutePrefix = "/api"
+
 func main() {
+	godotenv.Load()
 	gin.SetMode(gin.ReleaseMode)
 	r := gin.Default()
 
 	r.NoRoute(notFoundHandler)
 
 	if os.Getenv("CACHE_ASSETS") == "true" {
-		// Load build files in memory and serve them from memory.
-		appFs := afero.NewMemMapFs()
-		copyFilesToAferoFs("../client/build", appFs)
-		r.Use(static.Serve("/", aferoToGinFs(appFs)))
+		assetFs := getCacheFs("../client/build", 0)
+		r.Use(static.Serve("/", aferoToGinFs(assetFs)))
 	} else {
 		r.Use(static.ServeRoot("/", "../client/build"))
 	}
 
-	r.POST("/api/v1/todos", func(ctx *gin.Context) {
+	apiGroup := r.Group(apiRoutePrefix)
+
+	apiGroup.POST("/v1/todos", func(ctx *gin.Context) {
 		payloadTodo := new(Todo)
 
 		if err := ctx.ShouldBindJSON(&payloadTodo); err != nil {
@@ -81,14 +82,14 @@ func main() {
 		ctx.JSON(http.StatusCreated, newTodo)
 	})
 
-	r.DELETE("/api/v1/todos/:todoId", func(ctx *gin.Context) {
+	apiGroup.DELETE("/v1/todos/:todoId", func(ctx *gin.Context) {
 		todoId := ctx.Param("todoId")
 		delete(todos, todoId)
 
 		ctx.JSON(http.StatusNoContent, nil)
 	})
 
-	r.GET("/api/v1/todos", func(ctx *gin.Context) {
+	apiGroup.GET("/v1/todos", func(ctx *gin.Context) {
 		todoVals := lo.Values(todos)
 		sort.SliceStable(todoVals, func(i, j int) bool {
 			return todoVals[i].CreatedAt < todoVals[j].CreatedAt
@@ -97,7 +98,7 @@ func main() {
 		ctx.JSON(http.StatusOK, todoVals)
 	})
 
-	r.GET("/api/v1/todos/:todoId", func(ctx *gin.Context) {
+	apiGroup.GET("/v1/todos/:todoId", func(ctx *gin.Context) {
 		todoId := ctx.Param("todoId")
 
 		todo, ok := todos[todoId]
@@ -116,16 +117,26 @@ func main() {
 	http.ListenAndServe(":3001", r.Handler())
 }
 
+func getCacheFs(sourcePath string, cacheTime time.Duration) afero.Fs {
+	base := afero.NewBasePathFs(afero.NewOsFs(), sourcePath)
+	layer := afero.NewMemMapFs()
+	ufs := afero.NewCacheOnReadFs(base, layer, cacheTime)
+	return ufs
+}
+
 type pipeServeFileSystem struct {
 	input afero.Fs
 }
 
 func (pFs *pipeServeFileSystem) Open(name string) (http.File, error) {
-	name = strings.TrimPrefix(name, "/")
 	return pFs.input.Open(name)
 }
 
 func (pFs *pipeServeFileSystem) Exists(prefix string, filepath string) bool {
+	if strings.HasPrefix(filepath, apiRoutePrefix) {
+		return false
+	}
+
 	if p := strings.TrimPrefix(filepath, prefix); len(p) < len(filepath) {
 		stats, err := pFs.input.Stat(p)
 		if err != nil {
@@ -147,40 +158,40 @@ func aferoToGinFs(fs afero.Fs) static.ServeFileSystem {
 	return &pipeServeFileSystem{fs}
 }
 
-func copyFilesToAferoFs(source string, dest afero.Fs) error {
-	return filepath.WalkDir(source, func(path string, d fs.DirEntry, err error) error {
-		if err != nil {
-			return err
-		}
+// func copyFilesToAferoFs(source string, dest afero.Fs) error {
+// 	return filepath.WalkDir(source, func(path string, d fs.DirEntry, err error) error {
+// 		if err != nil {
+// 			return err
+// 		}
 
-		destPath := strings.TrimPrefix(strings.TrimPrefix(path, source), "/")
+// 		destPath := strings.TrimPrefix(strings.TrimPrefix(path, source), "/")
 
-		if destPath == "" {
-			return nil
-		}
+// 		if destPath == "" {
+// 			return nil
+// 		}
 
-		if d.IsDir() {
-			err := dest.MkdirAll(destPath, 0666)
-			if err != nil {
-				return err
-			}
-		} else if d.Type().IsRegular() {
-			destF, err := dest.OpenFile(destPath, os.O_CREATE|os.O_WRONLY|os.O_TRUNC, 0666)
-			if err != nil {
-				return err
-			}
+// 		if d.IsDir() {
+// 			err := dest.MkdirAll(destPath, 0666)
+// 			if err != nil {
+// 				return err
+// 			}
+// 		} else if d.Type().IsRegular() {
+// 			destF, err := dest.OpenFile(destPath, os.O_CREATE|os.O_WRONLY|os.O_TRUNC, 0666)
+// 			if err != nil {
+// 				return err
+// 			}
 
-			sourceF, err := os.Open(path)
-			if err != nil {
-				return err
-			}
+// 			sourceF, err := os.Open(path)
+// 			if err != nil {
+// 				return err
+// 			}
 
-			_, err = io.Copy(destF, sourceF)
-			if err != nil {
-				return err
-			}
-		}
+// 			_, err = io.Copy(destF, sourceF)
+// 			if err != nil {
+// 				return err
+// 			}
+// 		}
 
-		return nil
-	})
-}
+// 		return nil
+// 	})
+// }
