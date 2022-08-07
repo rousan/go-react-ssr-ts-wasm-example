@@ -1,22 +1,12 @@
-import React, { useEffect, useRef, useState } from 'react';
-import { Button, Input, Divider, message } from 'antd';
+import React, { useEffect, useState } from 'react';
+import { Button, Input, message } from 'antd';
 import axios from 'axios';
 import './index.css';
 import { Todo } from '../../types';
-import TodoItem from '../TodoItem';
+import TodoItem from '../../components/TodoItem';
 
-interface AppState {
-  todos: Todo[]
-}
-
-declare global {
-  interface Window {
-    __INIT_STATE__: AppState;
-  }
-}
-
-function App() {
-  const [todos, setTodos] = useState<Todo[]>(window.__INIT_STATE__.todos);
+function HomePage() {
+  const [todos, setTodos] = useState<Todo[]>([]);
   const [newTodoText, setNewTodoText] = useState<string>("");
 
   const onDeleteTodoItem = async (todoId: string) => {
@@ -48,7 +38,7 @@ function App() {
   }, []);
 
   return (
-    <div className="app">
+    <div className="home-page">
       <h2>Your todos</h2>
       <div className="todo-items">
         {
@@ -82,4 +72,4 @@ function App() {
   );
 }
 
-export default App;
+export default HomePage;
