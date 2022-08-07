@@ -5,7 +5,34 @@ tasks:
       - command: go install github.com/cosmtrek/air@latest
   dev:client:
     run:
-      - command: cd client && npm run start && cd ..
+      - command: cd client && yarn dev && cd ..
   dev:server:
     run:
       - command: cd server && air && cd ..
+  start:client:
+    run:
+      - command: cd client && yarn build && yarn start && cd ..
+  start:server:
+    run:
+      - command: cd server && go run . && cd ..
+  tidy:
+    run:
+      - command: cd server && go mod tidy && cd ..
+  up:
+    run:
+      - command: docker-compose kill
+      - command: docker-compose up --no-deps --build
+  up:detached:
+    run:
+      - command: docker-compose kill
+      - command: docker-compose up -d --no-deps --build
+  deploy:staging:
+    run:
+      - command: echo "Deploying on the prod server"
+      - command: echo "Please update (if any) the .env files for the staging server by logging into the VPS, hit Enter once it's done:" && read confirmation
+      - command: ssh root@neon.lab.rousan.io 'bash -s' <./deploy/run-inside-vps.sh staging
+  deploy:prod:
+    run:
+      - command: echo "Deploying on the prod server"
+      - command: echo "Please update (if any) the .env files for the prod server by logging into the VPS, hit Enter once it's done:" && read confirmation
+      - command: ssh root@neon.lab.rousan.io 'bash -s' <./deploy/run-inside-vps.sh prod

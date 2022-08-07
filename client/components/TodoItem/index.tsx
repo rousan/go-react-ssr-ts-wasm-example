@@ -2,7 +2,7 @@ import React from 'react';
 import { Button, Divider } from 'antd';
 import axios from 'axios';
 import { Todo } from '../../types';
-import './index.css';
+import styles from './index.module.css';
 
 interface TodoItemProps {
   data: Todo;
@@ -15,11 +15,11 @@ function TodoItem({ data, onDelete }: TodoItemProps) {
   };
 
   return (
-    <div className="todo-item">
-      <div className="todo-text">
+    <div className={styles.todoItem}>
+      <div className={styles.todoText}>
         {data.text}
       </div>
-      <div className="todo-actions">
+      <div className={styles.todoActions}>
         <Button
           type="danger"
           icon="delete"

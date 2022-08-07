@@ -1,0 +1,6 @@
+build
+tmp
+Dockerfile
+.dockerignore
+.git
+.env

@@ -1,6 +1,6 @@
 # go-react-ts-wasm-example
 
-An example project with uses Golang, React with server side rendering feature, TypeScript and WebAssembly.
+An example project which uses Golang, React with server side rendering feature, TypeScript and WebAssembly.
 
 ## Requirements
 
@@ -30,4 +30,18 @@ Start the dev server for server:
 tusk dev:server
 ```
 
-Please refer to `tusk.yml` file for more commands.
+## Deployment
+
+First, go to VPS machine and create env files in `client` and `server` folders from `client/.env.local.example` as `.env.local` and from `server/.env.example` as `.env` respectively.
+
+Deploy in staging environment:
+
+```sh
+tusk deploy:staging
+```
+
+Deploy in production environment:
+
+```sh
+tusk deploy:prod
+```
