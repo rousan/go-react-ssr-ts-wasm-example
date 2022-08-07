@@ -3,21 +3,34 @@ tasks:
   setup:
     run:
       - command: go install github.com/cosmtrek/air@latest
+      - command: sudo npm install -g concurrently
   dev:client:
     run:
       - command: cd client && yarn dev && cd ..
   dev:server:
     run:
       - command: cd server && air && cd ..
+  dev:
+    run:
+      - command: concurrently "tusk dev:client" "tusk dev:server"
   start:client:
     run:
       - command: cd client && yarn build && yarn start && cd ..
   start:server:
     run:
       - command: cd server && go run . && cd ..
-  tidy:
+  start:
+    run:
+      - command: concurrently "tusk start:client" "tusk start:server"
+  tidy:server:
     run:
       - command: cd server && go mod tidy && cd ..
+  tidy:wasm:
+    run:
+      - command: cd wasm && go mod tidy && cd ..
+  tidy:
+    run:
+      - command: tusk tidy:server && tusk tidy:wasm
   up:
     run:
       - command: docker-compose kill

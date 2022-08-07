@@ -7,7 +7,7 @@ An example project which uses Golang as backend, NextJS as frontend, also it use
 It's using [tusk](https://github.com/rliebz/tusk) to run the automated scripts. Install it from the following:
 
 ```sh
-brew install rliebz/tusk/tusk
+$ brew install rliebz/tusk/tusk
 ```
 
 ## Development
@@ -15,19 +15,31 @@ brew install rliebz/tusk/tusk
 Setup the project by installing all the required dev tools:
 
 ```sh
-tusk setup
+$ tusk setup
 ```
 
-Start the dev server for client:
+Start the dev servers:
 
 ```sh
-tusk dev:client
+$ tusk dev
 ```
 
-Start the dev server for server:
+Start the app in prod mode:
 
 ```sh
-tusk dev:server
+$ tusk start
+```
+
+Start the app in prod mode in Docker:
+
+```sh
+$ tusk up
+```
+
+Start the app in prod mode in Docker in detached mode:
+
+```sh
+$ tusk up:detached
 ```
 
 ## Deployment
@@ -37,11 +49,11 @@ First, go to VPS machine and create env files in `client` and `server` folders f
 Deploy in staging environment:
 
 ```sh
-tusk deploy:staging
+$ tusk deploy:staging
 ```
 
 Deploy in production environment:
 
 ```sh
-tusk deploy:prod
+$ tusk deploy:prod
 ```
