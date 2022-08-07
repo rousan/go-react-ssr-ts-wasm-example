@@ -1,6 +1,6 @@
 # go-react-ts-wasm-example
 
-An example project which uses Golang, React with server side rendering feature, TypeScript and WebAssembly.
+An example project which uses Golang as backend, NextJS as frontend, also it uses TypeScript and WebAssembly(Golang).
 
 ## Requirements
 
