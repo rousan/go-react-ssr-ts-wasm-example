@@ -22,6 +22,7 @@ var todos = make(map[string]*Todo, 0)
 
 func main() {
 	godotenv.Load()
+	gin.SetMode(os.Getenv("GIN_MODE"))
 	r := gin.Default()
 
 	clientProxy := httputil.NewSingleHostReverseProxy(&url.URL{
