@@ -38,3 +38,5 @@ next-env.d.ts
 .env.local
 yarn.lock
 package-lock.json
+public/wasm
+wasm/wasm-path.ts
