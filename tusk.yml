@@ -33,7 +33,7 @@ tasks:
       cd ..
   dev:
     run:
-      - command: concurrently "tusk dev:client" "tusk dev:server" "tusk dev:wasm"
+      - command: concurrently "tusk dev:wasm" "tusk dev:client" "tusk dev:server"
   start:client:
     run:
       - command: tusk build:wasm
