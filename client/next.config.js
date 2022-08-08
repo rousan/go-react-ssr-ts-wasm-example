@@ -12,7 +12,7 @@ const nextConfig = {
     for (const loader of loaders) {
       loader.options.modules.exportLocalsConvention = 'camelCase';
     }
-
+    
     return config;
   }
 }

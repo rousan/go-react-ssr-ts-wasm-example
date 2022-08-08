@@ -8,16 +8,6 @@ import pic from '../../media/pic.png';
 interface AboutProps { }
 
 const About: NextPage<AboutProps> = (props: AboutProps) => {
-  useEffect(() => {
-    wasm.add(1, 2)
-      .then((val) => {
-        console.log("about", val, Math.random());
-      })
-      .catch((err) => {
-        console.log(err);
-      })
-  }, []);
-
   return (
     <div className={styles.about}>
       About page

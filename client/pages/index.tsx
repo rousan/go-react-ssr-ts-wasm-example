@@ -50,7 +50,7 @@ const Home: NextPage<HomeProps> = ({ initTodos }: HomeProps) => {
   useEffect(() => {
     wasm.add(1, 2)
       .then((val) => {
-        console.log("home", val, Math.random());
+        console.log("Calculated from wasm: ", val);
       })
       .catch((err) => {
         console.log(err);
