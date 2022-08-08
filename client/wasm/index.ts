@@ -1,6 +1,7 @@
+import wasmFilePath from './wasm-path';
+
 let isWasmInitialized = false;
 const registryName = "wasm";
-const wasmFilePath = "lib.wasm";
 
 declare global {
   interface Window {
@@ -35,4 +36,9 @@ async function initWasm() {
 export async function add(x: number, y: number): Promise<number> {
   await initWasm();
   return window.wasm.add(x, y);
+}
+
+export async function subtract(x: number, y: number): Promise<number> {
+  await initWasm();
+  return window.wasm.subtract(x, y);
 }
