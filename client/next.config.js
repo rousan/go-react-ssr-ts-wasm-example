@@ -12,9 +12,26 @@ const nextConfig = {
     for (const loader of loaders) {
       loader.options.modules.exportLocalsConvention = 'camelCase';
     }
-    
     return config;
-  }
+  },
+  async headers() {
+    return [
+      {
+        source: '/:all*(wasm)',
+        locale: false,
+        headers: [
+          {
+            key: 'Cache-Control',
+            value: 'public, max-age=31536000, immutable',
+          },
+          {
+            key: 'Content-Type',
+            value: 'application/wasm',
+          }
+        ],
+      },
+    ]
+  },
 }
 
 module.exports = nextConfig
