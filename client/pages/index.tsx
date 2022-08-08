@@ -1,15 +1,23 @@
 import { useEffect, useState } from 'react';
 import type { NextPage } from 'next'
+import Link from 'next/link'
 import { Button, Input, message } from 'antd';
+import dynamic from 'next/dynamic';
 import axios from 'axios';
 import { Todo } from '../types';
 import TodoItem from '../components/TodoItem';
 import styles from './index.module.css';
 import { getAPIEndpoint } from '../utils';
+import * as wasm from '../wasm';
 
 interface HomeProps {
   initTodos: Todo[];
 }
+
+const AsyncComp = dynamic(() => import("../components/AsyncComp"), {
+  ssr: false,
+  loading: () => <div>Loading...</div>
+})
 
 const Home: NextPage<HomeProps> = ({ initTodos }: HomeProps) => {
   const [todos, setTodos] = useState<Todo[]>(initTodos);
@@ -39,9 +47,23 @@ const Home: NextPage<HomeProps> = ({ initTodos }: HomeProps) => {
     await refreshTodos();
   };
 
+  useEffect(() => {
+    wasm.add(1, 2)
+      .then((val) => {
+        console.log("home", val, Math.random());
+      })
+      .catch((err) => {
+        console.log(err);
+      })
+  }, []);
+
   return (
-    <div className={styles.homePage}>
+    <div className={styles.home}>
       <h2>Your todos</h2>
+      <AsyncComp />
+      <Link href="/about">
+        <a>About</a>
+      </Link>
       <div className={styles.todoItems}>
         {
           todos.map((todo) => {

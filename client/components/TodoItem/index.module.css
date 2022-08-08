@@ -6,6 +6,6 @@
   padding: 5px;
 }
 
-.todo-item .todo-text {
+.todo-text {
   flex: 1;
 }

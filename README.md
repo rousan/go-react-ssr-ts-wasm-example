@@ -18,25 +18,25 @@ Setup the project by installing all the required dev tools:
 $ tusk setup
 ```
 
-Start the dev servers:
+Start the dev servers (`http://localhost:3001/`):
 
 ```sh
 $ tusk dev
 ```
 
-Start the app in prod mode:
+Start the app in prod mode (`http://localhost:3001/`):
 
 ```sh
 $ tusk start
 ```
 
-Start the app in prod mode in Docker:
+Start the app in prod mode in Docker (`http://localhost:80/`):
 
 ```sh
 $ tusk up
 ```
 
-Start the app in prod mode in Docker in detached mode:
+Start the app in prod mode in Docker in detached mode (`http://localhost:80/`):
 
 ```sh
 $ tusk up:detached

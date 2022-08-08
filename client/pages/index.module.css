@@ -1,20 +1,20 @@
-.home-page {
+.home {
   padding: 50px;
   max-width: 1000px;
   margin: 0 auto;
 }
 
-.home-page .todo-items {
+.todo-items {
   margin-bottom: 50px;
 }
 
-.home-page .new-todo-panel {
+.new-todo-panel {
   display: flex;
   flex-direction: row;
   align-items: center;
 }
 
-.home-page .new-todo-input {
+.new-todo-input {
   flex: 1;
   margin-right: 10px;
 }

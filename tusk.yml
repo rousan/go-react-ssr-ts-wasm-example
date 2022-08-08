@@ -4,21 +4,36 @@ tasks:
     run:
       - command: go install github.com/cosmtrek/air@latest
       - command: sudo npm install -g concurrently
+  build:client:
+    run:
+      - command: cd client && yarn build && cd ..
+  build:server:
+    run:
+      - command: cd server && go build -o ./build/app . && cd ..
+  build:wasm:
+    run:
+      - command: cd wasm && GOARCH=wasm GOOS=js go build -o ../client/public/lib.wasm . && cd ..
   dev:client:
     run:
       - command: cd client && yarn dev && cd ..
   dev:server:
     run:
       - command: cd server && air && cd ..
+  dev:wasm:
+    run:
+      - command: cd wasm && air --build.cmd "tusk build:wasm" --build.bin "echo 'WebAssembly file is generated!'" && cd ..
   dev:
     run:
-      - command: concurrently "tusk dev:client" "tusk dev:server"
+      - command: concurrently "tusk dev:client" "tusk dev:server" "tusk dev:wasm"
   start:client:
     run:
-      - command: cd client && yarn build && yarn start && cd ..
+      - command: tusk build:wasm
+      - command: tusk build:client
+      - command: cd client && yarn start && cd..
   start:server:
     run:
-      - command: cd server && go run . && cd ..
+      - command: tusk build:server
+      - command: cd server && ./build/app && cd ..
   start:
     run:
       - command: concurrently "tusk start:client" "tusk start:server"
