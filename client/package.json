@@ -3,9 +3,9 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev -p 3000",
+    "dev": "env-cmd -f ../.env --silent next dev -p 3000",
     "build": "next build",
-    "start": "next start -p 3000",
+    "start": "env-cmd -f ../.env --silent next start -p 3000",
     "lint": "next lint"
   },
   "dependencies": {
@@ -19,6 +19,7 @@
     "@types/node": "^18.6.4",
     "@types/react": "18.0.15",
     "@types/react-dom": "18.0.6",
+    "env-cmd": "^10.1.0",
     "eslint": "8.21.0",
     "eslint-config-next": "12.2.4",
     "lodash": "^4.17.21",

@@ -22,7 +22,7 @@ type Todo struct {
 var todos = make(map[string]*Todo, 0)
 
 func main() {
-	godotenv.Load()
+	godotenv.Load("../.env")
 	gin.SetMode(os.Getenv("GIN_MODE"))
 	r := gin.Default()
 
@@ -35,7 +35,7 @@ func main() {
 	registerAPIRoutes(r)
 
 	port := lo.Ternary(os.Getenv("PORT") != "", os.Getenv("PORT"), os.Getenv("SERVER_PORT"))
-	addr := net.JoinHostPort("localhost", port)
+	addr := net.JoinHostPort("0.0.0.0", port)
 	log.Println("Listening the server on: ", addr)
 	http.ListenAndServe(addr, r.Handler())
 }
