@@ -10,6 +10,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
+	"github.com/samber/lo"
 )
 
 type Todo struct {
@@ -33,6 +34,8 @@ func main() {
 	r.NoRoute(gin.WrapH(clientProxy))
 	registerAPIRoutes(r)
 
-	log.Println("Listening the server on :3001")
-	http.ListenAndServe(":3001", r.Handler())
+	port := lo.Ternary(os.Getenv("PORT") != "", os.Getenv("PORT"), os.Getenv("SERVER_PORT"))
+	addr := net.JoinHostPort("localhost", port)
+	log.Println("Listening the server on: ", addr)
+	http.ListenAndServe(addr, r.Handler())
 }

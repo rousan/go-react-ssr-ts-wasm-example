@@ -61,3 +61,14 @@ Deploy in production environment:
 ```sh
 $ tusk deploy:prod
 ```
+
+## Deploy on Heroku
+
+1. After creating the app on heroku, connect the app with the Github repo.
+2. Run the following command to enable container deployment:
+
+```sh
+$ heroku stack:set container --app <app_name_on_heroku>
+```
+
+## 
