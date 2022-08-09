@@ -64,11 +64,13 @@ $ tusk deploy:prod
 
 ## Deploy on Heroku
 
-1. After creating the app on heroku, connect the app with the Github repo.
+1. After creating the app on heroku, connect the app with the Github repo to automate deployment on `push` (See `Deploy` tab).
 2. Run the following command to enable container deployment:
 
 ```sh
 $ heroku stack:set container --app <app_name_on_heroku>
 ```
+3. Click on `Enable Automatic Deploys` to automate the deployment on branch push.
+4. Push to the configured branch or click on `Deploy Branch` button to deploy.
 
-## 
+**Notes:** The same process can be followed with the staging (deployed from `develop` branch) and production (deployed from `main` branch) apps.
