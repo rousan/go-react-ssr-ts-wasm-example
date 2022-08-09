@@ -1,22 +1,8 @@
 version: "3.9"
 services:
-  client:
-    build: ./client
-    ports:
-      - ":3000"
-    env_file:
-      - ./client/.env.local
-    environment:
-      - SERVER_SCHEME=http
-      - SERVER_HOST=server
-      - SERVER_PORT=3001
-  server:
-    build: ./server
+  app:
+    build: .
     ports:
       - "80:3001"
     env_file:
-      - ./server/.env
-    environment:
-      - CLIENT_SCHEME=http
-      - CLIENT_HOST=client
-      - CLIENT_PORT=3000
+      - ./.env

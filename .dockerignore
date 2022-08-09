@@ -1,0 +1,12 @@
+**/node_modules
+**/npm-debug.log
+**/.next
+.git
+**/yarn.lock
+**/package-lock.json
+**/build
+**/tmp
+.env
+.vscode
+**/go.sum
+**/go.work.sum

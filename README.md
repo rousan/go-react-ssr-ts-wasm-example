@@ -12,10 +12,16 @@ $ brew install rliebz/tusk/tusk
 
 ## Development
 
-Setup the project by installing all the required dev tools:
+Setup the project for development:
 
 ```sh
-$ tusk setup
+$ tusk setup:dev
+```
+
+Setup the project for production:
+
+```sh
+$ tusk setup:prod
 ```
 
 Start the dev servers (`http://localhost:3001/`):
@@ -27,7 +33,7 @@ $ tusk dev
 Start the app in prod mode (`http://localhost:3001/`):
 
 ```sh
-$ tusk start
+$ tusk build && tusk start
 ```
 
 Start the app in prod mode in Docker (`http://localhost:80/`):
@@ -43,8 +49,6 @@ $ tusk up:detached
 ```
 
 ## Deployment
-
-First, go to VPS machine and create env files in `client` and `server` folders from `client/.env.local.example` as `.env.local` and from `server/.env.example` as `.env` respectively.
 
 Deploy in staging environment:
 
