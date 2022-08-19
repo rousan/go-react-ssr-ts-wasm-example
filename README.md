@@ -2,7 +2,7 @@
 1. Rust wasm file size is very low compared to Golnag.
 2. Rust takes very little memory, Golang takes more due to GC.
 3. Rust is faster then Golang.
-4. Also, Golang is perfect for server/services, not for WebAssembly.
+4. Also, Golang is perfect for server/services (due to goroutine), not for WebAssembly.
 
 # go-react-ts-wasm-example
 
